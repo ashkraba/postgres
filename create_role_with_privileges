@@ -1,0 +1,11 @@
+#!/bin/bash
+ROLE=wpl_full
+psql -c "CREATE ROLE $ROLE"
+db=$(psql -c "SELECT datname FROM pg_database WHERE datname NOT LIKE 'test%' AND datname LIKE '%webplatform%';"| sed '1,2d'| head -n -2)
+for a in $db
+do
+        psql -d $a -c "REVOKE ALL ON DATABASE \"$a\" FROM $ROLE;"
+        psql -d $a -c "GRANT CONNECT ON DATABASE \"$a\" TO $ROLE;"
+        psql -d $a -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO $ROLE;"
+done
