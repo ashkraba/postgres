@@ -9,3 +9,33 @@ do
         psql -d $a -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO $ROLE;"
         psql -d $a -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO $ROLE;"
 done
+
+
+
+ROLE=wpl_admins
+db=$(psql -c "SELECT datname FROM pg_database WHERE datname LIKE 'webplatform%';"| sed '1,2d'| head -n -2)
+for a in $db
+do
+        psql -d $a -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "GRANT ALL ON ALL sequences IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON TABLES TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON sequences TO $ROLE;"
+done
+ROLE=wpl_devs
+db=$(psql -c "SELECT datname FROM pg_database WHERE datname LIKE 'webplatform%';"| sed '1,2d'| head -n -2)
+for a in $db
+do
+        psql -d $a -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "GRANT SELECT ON ALL sequences IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON TABLES TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON sequences TO $ROLE;"
+done
+ROLE=wpl_tech
+db=$(psql -c "SELECT datname FROM pg_database WHERE datname LIKE 'webplatform%';"| sed '1,2d'| head -n -2)
+for a in $db
+do
+        psql -d $a -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "GRANT SELECT ON ALL sequences IN SCHEMA public TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON TABLES TO $ROLE;"
+        psql -d $a -c "ALTER DEFAULT PRIVILEGES FOR ROLE wpl_app IN SCHEMA public GRANT ALL ON sequences TO $ROLE;"
+done
